@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wirelist Template</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+    .btn {
+      padding: 10px 15px;
+      margin: 10px 5px;
+      cursor: pointer;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="template">
+  <h1>Wirelist Entry Form</h1>
+
+  <label>Bundle Number: <input type="text" id="bundleNo" placeholder="e.g., 88277"></label>
+
+  <table id="wireTable">
+    <thead>
+      <tr>
+        <th>Wire No</th>
+        <th>Gauge</th>
+        <th>Eff Tvy</th>
+        <th>Color</th>
+        <th>Term F Equip</th>
+        <th>Term T Equip</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" placeholder="1AA"></td>
+        <td><input type="text" placeholder="20"></td>
+        <td><input type="text" placeholder="SL002"></td>
+        <td><input type="text" placeholder="RED"></td>
+        <td><input type="text" placeholder="E1"></td>
+        <td><input type="text" placeholder="E2"></td>
+        <td><button class="btn" onclick="removeRow(this)">Remove</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn" onclick="addRow()">Add Wire</button>
+  <button class="btn" onclick="downloadPDF()">Download PDF</button>
+</div>
+
+<script>
+function addRow() {
+  const table = document.getElementById('wireTable').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+
+  for (let i = 0; i < 6; i++) {
+    const cell = newRow.insertCell();
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = "...";
+    cell.appendChild(input);
+  }
+  const actionCell = newRow.insertCell();
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.innerText = 'Remove';
+  btn.onclick = function() { removeRow(btn); };
+  actionCell.appendChild(btn);
+}
+
+function removeRow(btn) {
+  const row = btn.parentNode.parentNode;
+  row.parentNode.removeChild(row);
+}
+
+function downloadPDF() {
+  const element = document.getElementById('template');
+  html2pdf().from(element).set({
+    margin: 1,
+    filename: 'Wirelist_Template.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true }
+  }).save();
+}
+</script>
+
+</body>
+</html>
